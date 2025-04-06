@@ -1,9 +1,42 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36" version="26.2.8">
   <diagram name="Página-1" id="Wk3r-ZlyLg6hV_R3POsk">
-    <mxGraphModel>
+    <mxGraphModel dx="10440" dy="8750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="5000" pageHeight="3000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mMpXwVdOlRor9XYbpblZ-1" target="mMpXwVdOlRor9XYbpblZ-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="mMpXwVdOlRor9XYbpblZ-1" target="mMpXwVdOlRor9XYbpblZ-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-1" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/768px-Visual_Studio_Code_1.35_icon.svg.png;" vertex="1" parent="1">
+          <mxGeometry x="1650" y="-1780" width="250" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mMpXwVdOlRor9XYbpblZ-2" target="mMpXwVdOlRor9XYbpblZ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-2" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/800px-Python-logo-notext.svg.png;" vertex="1" parent="1">
+          <mxGeometry x="2440" y="-2250" width="282.46" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-3" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/768px-Visual_Studio_Code_1.35_icon.svg.png;" vertex="1" parent="1">
+          <mxGeometry x="3175" y="-1405" width="250" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-4" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/800px-Typescript_logo_2020.svg.png;" vertex="1" parent="1">
+          <mxGeometry x="2440" y="-1420" width="280" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mMpXwVdOlRor9XYbpblZ-5" target="mMpXwVdOlRor9XYbpblZ-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-5" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://static-00.iconduck.com/assets.00/flask-icon-1594x2048-84mjydzf.png;" vertex="1" parent="1">
+          <mxGeometry x="2442.26" y="-2870" width="280.2" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-7" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://cdn2.iconfinder.com/data/icons/whcompare-isometric-web-hosting-servers/50/value-server-512.png;" vertex="1" parent="1">
+          <mxGeometry x="3120" y="-2950" width="512" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="mMpXwVdOlRor9XYbpblZ-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="mMpXwVdOlRor9XYbpblZ-5" target="mMpXwVdOlRor9XYbpblZ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
