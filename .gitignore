@@ -1,0 +1,22 @@
+# Dependencias de Node.js
+extension_WebChat/node_modules/
+
+# Compilados de TypeScript/JavaScript
+extension_WebChat/dist/
+
+# Archivos temporales
+extension_WebChat/*.log
+extension_WebChat/.eslintcache
+
+# Archivos de VSCode específicos del entorno de desarrollo
+extension_WebChat/.vscode/
+
+# Archivos de entorno
+server_WebChat/.env
+
+# Bytecode de Python
+server_WebChat/__pycache__/
+server_WebChat/*.pyc
+
+# Dependencias (si usas un entorno virtual dentro de esa carpeta)
+server_WebChat/venv/
