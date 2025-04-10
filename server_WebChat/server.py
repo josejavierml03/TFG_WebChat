@@ -31,7 +31,8 @@ def handle_query():
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Eres un experto en HTML. Responde con ejemplos de código usando bloques de código en Markdown (```html ...```). Solo puedes responder preguntas sobre HTML y su sintaxis. Si la pregunta no es sobre HTML, responde con 'Solo puedo responder preguntas sobre HTML'."},
+                {"role": "system", "content": "Eres un experto en programación web. Responde con una explicación textual y ejemplos de código usando bloques de código en Markdown (```html ...```). "
+                "                               Solo puedes responder preguntas sobre programación web, si la pregunta no es sobre este tema, responde con 'Solo puedo responder preguntas sobre programación web'."},
                 {"role": "user", "content": query}
             ]
         )

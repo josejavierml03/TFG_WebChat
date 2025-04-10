@@ -39,43 +39,80 @@ function getWebviewContent() {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Consulta API</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    display: flex;
-                    flex-direction: column;
-                    height: 100vh;
-                }
-                #response {
-                    flex-grow: 1;
-                    overflow-y: scroll;
-                    padding: 10px;
-                    background-color: #f1f1f1;
-                    border-bottom: 2px solid #ccc;
-                }
-                #input-container {
-                    display: flex;
-                    padding: 10px;
-                    border-top: 2px solid #ccc;
-                }
-                #input-container input {
-                    flex-grow: 1;
-                    padding: 10px;
-                    border-radius: 5px;
-                    border: 1px solid #ccc;
-                }
-                #input-container button {
-                    background-color: #007ACC;
-                    color: white;
-                    padding: 10px 15px;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                }
-            </style>
-            <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> <!-- Cargar la librería 'marked' -->
+           <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+            }
+
+            #response {
+                flex-grow: 1;
+                overflow-y: auto;
+                padding: 15px;
+                background-color: #1e1e1e;
+                border-bottom: 2px solid #333;
+            }
+
+            #input-container {
+                display: flex;
+                padding: 10px;
+                border-top: 2px solid #333;
+                background-color: #252526;
+            }
+
+            #input-container input {
+                flex-grow: 1;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #555;
+                background-color: #1e1e1e;
+                color: #ffffff;
+                outline: none;
+            }
+
+            #input-container input::placeholder {
+                color: #888;
+            }
+
+            #input-container button {
+                margin-left: 10px;
+                background-color: #007acc;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #input-container button:hover {
+                background-color: #005f99;
+            }
+
+            pre {
+                background-color: #2d2d2d;
+                padding: 10px;
+                border-radius: 5px;
+                overflow-x: auto;
+                color: #dcdcdc;
+            }
+
+            code {
+                font-family: 'Courier New', monospace;
+                color: #9cdcfe;
+            }
+
+            a {
+                color: #3794ff;
+            }
+        </style>
+
         </head>
         <body>
             <div id="response"></div>
@@ -83,33 +120,43 @@ function getWebviewContent() {
                 <input type="text" id="question" placeholder="Escribe tu pregunta...">
                 <button id="sendButton">Enviar</button>
             </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
             <script>
-                const vscode = acquireVsCodeApi();
+                window.addEventListener('DOMContentLoaded', () => {
+                    const vscode = acquireVsCodeApi();
 
-                // Manejar el clic del botón
-                document.getElementById('sendButton').onclick = () => {
-                    const question = document.getElementById('question').value;
-                    vscode.postMessage({ command: 'askQuestion', text: question });
-                };
+                    document.getElementById('sendButton').onclick = () => {
+                        const question = document.getElementById('question').value;
+                        vscode.postMessage({ command: 'askQuestion', text: question });
+                    };
 
-                // Recibir la respuesta de la API
-                window.addEventListener('message', event => {
-                    const message = event.data;
-                    switch (message.command) {
-                        case 'showResponse':
+                    document.getElementById('question').addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // evita que se envíe un formulario o refresque
+                            document.getElementById('sendButton').click(); // simula clic en el botón
+                        }
+                    });
+
+                    window.addEventListener('message', event => {
+                        const message = event.data;
+                        console.log("Mensaje recibido:", message);
+
+                        if (message.command === 'showResponse') {
                             const responseDiv = document.getElementById('response');
                             const newResponse = document.createElement('div');
-                            
-                            // Imprimir la respuesta de la API para debuggear
-                            console.log("Respuesta de la API (Markdown):", message.text);
-                            
-                            // Convierte el texto Markdown a HTML usando 'marked'
-                            newResponse.innerHTML = marked(message.text); // Convertir Markdown a HTML
+
+                            try {
+                                newResponse.innerHTML = marked.parse(message.text);
+                            } catch (err) {
+                                console.error("Error al procesar Markdown:", err);
+                                newResponse.textContent = message.text;
+                            }
 
                             responseDiv.appendChild(newResponse);
-                            responseDiv.scrollTop = responseDiv.scrollHeight; // Desplazar hacia abajo
-                            break;
-                    }
+                            responseDiv.scrollTop = responseDiv.scrollHeight;
+                        }
+                    });
                 });
             </script>
         </body>
@@ -124,8 +171,35 @@ interface ApiResponse {
 
 // Función para enviar la pregunta a la API
 async function sendQuestionToAPI(question: string): Promise<string> {
+    console.log("Simulando respuesta de la API para la pregunta:", question);
+
+    const markdownResponse = `
+Claro, en HTML los párrafos se crean utilizando la etiqueta \`<p>\`. Esta etiqueta define un párrafo de texto y automáticamente inserta un espacio en blanco antes y después del párrafo.
+
+Aquí tienes un ejemplo de cómo se vería un párrafo en HTML:
+
+\`\`\`html
+<p>Este es un párrafo de ejemplo en HTML. Aquí puedes escribir tu texto.</p>
+\`\`\`
+
+Y puedes agregar tantos párrafos como desees en tu documento HTML:
+
+\`\`\`html
+<p>Este es el primer párrafo.</p>
+
+<p>Este es el segundo párrafo.</p>
+
+<p>Y este sería un tercer párrafo en el documento.</p>
+\`\`\`
+
+Recuerda que el navegador automáticamente añadirá algo de espacio antes y después de cada párrafo para facilitar la lectura y visualización del contenido.
+`;
+
+    return markdownResponse;
+
+    /*
     // Realizar la petición a la API
-    const response = await fetch('http://172.22.76.104:8080/query', {
+    const response = await fetch('http://192.168.18.5:8080/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: question })
@@ -142,6 +216,7 @@ async function sendQuestionToAPI(question: string): Promise<string> {
     // Retornar el campo 'response' de la respuesta
     console.log("Respuesta recibida de la API:", data.response);
     return data.response;
+    */
 }
 
 
