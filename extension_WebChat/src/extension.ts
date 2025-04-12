@@ -4,7 +4,7 @@ export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('extension.showPanel', () => {
         const panel = vscode.window.createWebviewPanel(
             'askAPI', // Identificador único
-            'Consulta API', // Título del panel
+            'WebChat', // Título del panel
             vscode.ViewColumn.Beside, // Mostrar al lado
             {
                 enableScripts: true, // Habilitar scripts dentro del Webview
@@ -33,13 +33,13 @@ export function activate(context: vscode.ExtensionContext) {
 // Función para obtener el contenido HTML
 function getWebviewContent() {
     return `
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Consulta API</title>
-           <style>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Consulta API</title>
+        <style>
             body {
                 font-family: Arial, sans-serif;
                 margin: 0;
@@ -57,6 +57,9 @@ function getWebviewContent() {
                 padding: 15px;
                 background-color: #1e1e1e;
                 border-bottom: 2px solid #333;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
             }
 
             #input-container {
@@ -95,6 +98,23 @@ function getWebviewContent() {
                 background-color: #005f99;
             }
 
+            .user-question {
+                background-color: #333;
+                padding: 10px;
+                border-radius: 10px;
+                max-width: 90%;
+                align-self: flex-end;
+                text-align: right;
+            }
+
+            .bot-response {
+                background-color: #2d2d2d;
+                padding: 10px;
+                border-radius: 10px;
+                max-width: 90%;
+                align-self: flex-start;
+            }
+
             pre {
                 background-color: #2d2d2d;
                 padding: 10px;
@@ -112,55 +132,60 @@ function getWebviewContent() {
                 color: #3794ff;
             }
         </style>
+    </head>
+    <body>
+        <div id="response"></div>
+        <div id="input-container">
+            <input type="text" id="question" placeholder="Escribe tu pregunta...">
+            <button id="sendButton">Enviar</button>
+        </div>
 
-        </head>
-        <body>
-            <div id="response"></div>
-            <div id="input-container">
-                <input type="text" id="question" placeholder="Escribe tu pregunta...">
-                <button id="sendButton">Enviar</button>
-            </div>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                const vscode = acquireVsCodeApi();
+                const input = document.getElementById('question');
+                const sendButton = document.getElementById('sendButton');
+                const responseDiv = document.getElementById('response');
 
-            <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-            <script>
-                window.addEventListener('DOMContentLoaded', () => {
-                    const vscode = acquireVsCodeApi();
+                function sendQuestion() {
+                    const question = input.value.trim();
+                    if (question !== '') {
+                        const userQuestion = document.createElement('div');
+                        userQuestion.className = 'user-question';
+                        userQuestion.innerHTML = '<strong>Tú:</strong> ' + question;
+                        responseDiv.appendChild(userQuestion);
+                        responseDiv.scrollTop = responseDiv.scrollHeight;
 
-                    document.getElementById('sendButton').onclick = () => {
-                        const question = document.getElementById('question').value;
                         vscode.postMessage({ command: 'askQuestion', text: question });
-                    };
+                        input.value = '';
+                        input.focus();
+                    }
+                }
 
-                    document.getElementById('question').addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault(); // evita que se envíe un formulario o refresque
-                            document.getElementById('sendButton').click(); // simula clic en el botón
-                        }
-                    });
+                sendButton.onclick = sendQuestion;
 
-                    window.addEventListener('message', event => {
-                        const message = event.data;
-                        console.log("Mensaje recibido:", message);
-
-                        if (message.command === 'showResponse') {
-                            const responseDiv = document.getElementById('response');
-                            const newResponse = document.createElement('div');
-
-                            try {
-                                newResponse.innerHTML = marked.parse(message.text);
-                            } catch (err) {
-                                console.error("Error al procesar Markdown:", err);
-                                newResponse.textContent = message.text;
-                            }
-
-                            responseDiv.appendChild(newResponse);
-                            responseDiv.scrollTop = responseDiv.scrollHeight;
-                        }
-                    });
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        sendQuestion();
+                    }
                 });
-            </script>
-        </body>
-        </html>
+
+                window.addEventListener('message', event => {
+                    const message = event.data;
+                    if (message.command === 'showResponse') {
+                        const newResponse = document.createElement('div');
+                        newResponse.className = 'bot-response';
+                        newResponse.innerHTML = '<strong>Respuesta:</strong><br>' + marked.parse(message.text);
+                        responseDiv.appendChild(newResponse);
+                        responseDiv.scrollTop = responseDiv.scrollHeight;
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>
     `;
 }
 
@@ -182,7 +207,7 @@ Aquí tienes un ejemplo de cómo se vería un párrafo en HTML:
 <p>Este es un párrafo de ejemplo en HTML. Aquí puedes escribir tu texto.</p>
 \`\`\`
 
-Y puedes agregar tantos párrafos como desees en tu documento HTML:
+Y puedes agregar tantos párrafos como desees en tu documento HTM L:
 
 \`\`\`html
 <p>Este es el primer párrafo.</p>
