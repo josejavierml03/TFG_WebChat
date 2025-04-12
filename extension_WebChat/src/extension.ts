@@ -3,28 +3,30 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('extension.showPanel', () => {
         const panel = vscode.window.createWebviewPanel(
-            'askAPI', // Identificador único
-            'WebChat', // Título del panel
-            vscode.ViewColumn.Beside, // Mostrar al lado
+            'askAPI', 
+            'WebChat', 
+            vscode.ViewColumn.Beside, 
             {
-                enableScripts: true, // Habilitar scripts dentro del Webview
+                enableScripts: true, 
             }
         );
 
-        // HTML del Webview
+      
         panel.webview.html = getWebviewContent();
 
-        // Enviar la pregunta cuando se hace clic en el botón
+        
         panel.webview.onDidReceiveMessage(message => {
             switch (message.command) {
                 case 'askQuestion':
-                    // Aquí envías la pregunta a la API
-                    sendQuestionToAPI(message.text).then(response => {
-                        panel.webview.postMessage({ command: 'showResponse', text: response });
+                    sendQuestionToAPI(message.text, panel).catch(err => {
+                        panel.webview.postMessage({
+                            command: 'partialResponse',
+                            text: '[Error] ' + err.message
+                        });
                     });
                     return;
             }
-        });
+        });        
     });
 
     context.subscriptions.push(disposable);
@@ -157,6 +159,10 @@ function getWebviewContent() {
                         responseDiv.appendChild(userQuestion);
                         responseDiv.scrollTop = responseDiv.scrollHeight;
 
+                        // Borrar respuesta anterior si existe
+                        const oldLive = document.getElementById('live-response');
+                        if (oldLive) oldLive.remove();
+
                         vscode.postMessage({ command: 'askQuestion', text: question });
                         input.value = '';
                         input.focus();
@@ -174,11 +180,16 @@ function getWebviewContent() {
 
                 window.addEventListener('message', event => {
                     const message = event.data;
-                    if (message.command === 'showResponse') {
-                        const newResponse = document.createElement('div');
-                        newResponse.className = 'bot-response';
-                        newResponse.innerHTML = '<strong>Respuesta:</strong><br>' + marked.parse(message.text);
-                        responseDiv.appendChild(newResponse);
+
+                    if (message.command === 'partialResponse') {
+                        let liveDiv = document.getElementById('live-response');
+                        if (!liveDiv) {
+                            liveDiv = document.createElement('div');
+                            liveDiv.className = 'bot-response';
+                            liveDiv.id = 'live-response';
+                            responseDiv.appendChild(liveDiv);
+                        }
+                        liveDiv.innerHTML = '<strong>Respuesta:</strong><br>' + marked.parse(message.text);
                         responseDiv.scrollTop = responseDiv.scrollHeight;
                     }
                 });
@@ -189,61 +200,42 @@ function getWebviewContent() {
     `;
 }
 
-// Definir una interfaz para la respuesta de la API
+
 interface ApiResponse {
-    response: string; // Aquí definimos que el campo 'response' es un string
+    response: string; 
 }
 
 // Función para enviar la pregunta a la API
-async function sendQuestionToAPI(question: string): Promise<string> {
-    console.log("Simulando respuesta de la API para la pregunta:", question);
-
-    const markdownResponse = `
-Claro, en HTML los párrafos se crean utilizando la etiqueta \`<p>\`. Esta etiqueta define un párrafo de texto y automáticamente inserta un espacio en blanco antes y después del párrafo.
-
-Aquí tienes un ejemplo de cómo se vería un párrafo en HTML:
-
-\`\`\`html
-<p>Este es un párrafo de ejemplo en HTML. Aquí puedes escribir tu texto.</p>
-\`\`\`
-
-Y puedes agregar tantos párrafos como desees en tu documento HTM L:
-
-\`\`\`html
-<p>Este es el primer párrafo.</p>
-
-<p>Este es el segundo párrafo.</p>
-
-<p>Y este sería un tercer párrafo en el documento.</p>
-\`\`\`
-
-Recuerda que el navegador automáticamente añadirá algo de espacio antes y después de cada párrafo para facilitar la lectura y visualización del contenido.
-`;
-
-    return markdownResponse;
-
-    /*
-    // Realizar la petición a la API
-    const response = await fetch('http://192.168.18.5:8080/query', {
+async function sendQuestionToAPI(question: string, panel: vscode.WebviewPanel): Promise<string> {
+    const response = await fetch('http://localhost:8080/query', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ query: question })
     });
 
-    // Verificamos que la respuesta sea válida
-    if (!response.ok) {
-        throw new Error('Error al obtener la respuesta de la API');
+    if (!response.ok || !response.body) {
+        throw new Error("Error al conectar con el servidor.");
     }
 
-    // Parsear la respuesta como ApiResponse
-    const data = (await response.json()) as ApiResponse;
-    
-    // Retornar el campo 'response' de la respuesta
-    console.log("Respuesta recibida de la API:", data.response);
-    return data.response;
-    */
-}
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let result = '';
+    let done = false;
 
+    while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunk = decoder.decode(value, { stream: true });
+        result += chunk;
+
+        vscode.window.visibleTextEditors.length; 
+        panel.webview.postMessage({ command: 'partialResponse', text: result });
+    }
+
+    return result;
+}
 
 
 

@@ -9,9 +9,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:extension.showPanel"
-  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
