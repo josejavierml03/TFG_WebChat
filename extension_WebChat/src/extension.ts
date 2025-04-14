@@ -159,10 +159,6 @@ function getWebviewContent() {
                         responseDiv.appendChild(userQuestion);
                         responseDiv.scrollTop = responseDiv.scrollHeight;
 
-                        // Borrar respuesta anterior si existe
-                        const oldLive = document.getElementById('live-response');
-                        if (oldLive) oldLive.remove();
-
                         vscode.postMessage({ command: 'askQuestion', text: question });
                         input.value = '';
                         input.focus();
@@ -182,15 +178,25 @@ function getWebviewContent() {
                     const message = event.data;
 
                     if (message.command === 'partialResponse') {
-                        let liveDiv = document.getElementById('live-response');
-                        if (!liveDiv) {
-                            liveDiv = document.createElement('div');
-                            liveDiv.className = 'bot-response';
-                            liveDiv.id = 'live-response';
-                            responseDiv.appendChild(liveDiv);
+                        let liveResponse = document.getElementById('live-response');
+
+                        if (!liveResponse) {
+                            liveResponse = document.createElement('div');
+                            liveResponse.className = 'bot-response';
+                            liveResponse.id = 'live-response';
+                            liveResponse.innerHTML = '<strong>Respuesta:</strong><br>';
+                            responseDiv.appendChild(liveResponse);
                         }
-                        liveDiv.innerHTML = '<strong>Respuesta:</strong><br>' + marked.parse(message.text);
+
+                        liveResponse.innerHTML = '<strong>Respuesta:</strong><br>' + marked.parse(message.text);
                         responseDiv.scrollTop = responseDiv.scrollHeight;
+                    }
+
+                    if (message.command === 'finalResponse') {
+                        const liveResponse = document.getElementById('live-response');
+                        if (liveResponse) {
+                            liveResponse.removeAttribute('id'); // ya no es "en vivo", queda como historial
+                        }
                     }
                 });
             });
@@ -199,6 +205,7 @@ function getWebviewContent() {
     </html>
     `;
 }
+
 
 
 interface ApiResponse {
@@ -230,9 +237,11 @@ async function sendQuestionToAPI(question: string, panel: vscode.WebviewPanel): 
         const chunk = decoder.decode(value, { stream: true });
         result += chunk;
 
-        vscode.window.visibleTextEditors.length; 
         panel.webview.postMessage({ command: 'partialResponse', text: result });
     }
+
+    // Enviar señal de que terminó el stream
+    panel.webview.postMessage({ command: 'finalResponse' });
 
     return result;
 }
