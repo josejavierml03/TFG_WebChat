@@ -26,7 +26,7 @@ def handle_query():
     def generate():
         try:
             stream = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "Eres un experto en programación web. Responde con una explicación textual y ejemplos de código usando bloques de código en Markdown (```html ...```). "
                 "                               Solo puedes responder preguntas sobre programación web, si la pregunta no es sobre este tema, responde con 'Solo puedo responder preguntas sobre programación web'."},
