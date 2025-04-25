@@ -11,10 +11,6 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 app = Flask(__name__, static_folder="static")
 
-@app.route('/')
-def serve_index():
-    return send_from_directory("static", "index.html")
-
 @app.route('/query', methods=['POST'])
 def handle_query():
     data = request.json
@@ -29,7 +25,7 @@ def handle_query():
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "Eres un experto en programación web. Responde con una explicación textual y ejemplos de código usando bloques de código en Markdown (```html ...```). "
-                "                               Solo puedes responder preguntas sobre programación web, si la pregunta no es sobre este tema, responde con 'Solo puedo responder preguntas sobre programación web'."},
+                "                               Solo puedes responder preguntas sobre programación web (HTML, CSS y JS), si la pregunta no es sobre este tema, responde con 'Solo puedo responder preguntas sobre programación web (HTML, CSS y JS)'."},
                     {"role": "user", "content": query}
                 ],
                 stream=True
